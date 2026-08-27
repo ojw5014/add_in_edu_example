@@ -1,23 +1,49 @@
-# OMX Follower 시뮬레이션 예제 (MuJoCo / Isaac Sim)
+# 로보틱스 기초 — 교육용 로봇팔 예제 모음 (OpenJigWare 3D · MuJoCo · Isaac Sim)
 
-작성일: 2026-08-17. K-디지털 국비지원 강의용 예제 프로그램 모음.
-로봇 모델은 **ojwSimul/MakeUrdf의 OMX Follower 예제(변형 DH)**를 MakeUrdf로 내보낸 것을 사용한다.
+K-디지털 기초역량훈련 「로보틱스 기초」 강의용 실습 예제 프로그램 모음입니다.
+로봇 모델은 OMX Follower 6축 로봇팔(변형 DH)이며, **파이썬 코드로 3D 로봇을 직접 움직이고,
+같은 코드로 실물 로봇(다이나믹셀)까지 구동**할 수 있습니다.
 
 ## 폴더 구성
 
 | 폴더 | 내용 | 검증 상태 |
 |---|---|---|
-| `ex0_pickplace_ojw3d\` | **윈도우 프로그램 (C# + OpenJigWare 3D)** — 픽앤플레이스·팔레타이징·사각형 그리기. 제어 API = 강의 형식 그대로 `Play / SyncRead / CalcInv / CalcXyz` (상세: 폴더 내 README) | ✅ 실행 검증 (1개·3개 모두 err 0.0mm, 사각형 완주) |
-| `ex0b_motiontable_ojw3d\` | **모션 테이블 실행기 (C# + OpenJigWare 3D)** — 예제 버튼 → 모션 그리드 생성 → Run으로 라이브러리 재생(PlayFrame+WaitAction). GUI 제외 전부 dll 함수 (상세: 폴더 내 README) | ✅ 실행 검증 (픽앤플레이스 안착·베지어 사각형 완주) |
-| `ex0c_python_ojw3d\` | **파이썬 실행기 (C# + OpenJigWare 3D)** — 단일 파일 `robot_example.py`(팔레타이징+사각형 직선+베지어)를 열어 Run = `Ojw.CPython` 실행, omx.py 명령(move/grip/grab...)으로 로봇 구동. 환경·동작은 ex0과 동일 (상세: 폴더 내 README) | ✅ 실행 검증 (한 번의 Run으로 3개 동작 완주) |
-| `model\` | OMX Follower 모델 — robot_stl.urdf(PyBullet/MuJoCo), robot_stl.xml(MJCF), robot_stl_isaac.urdf(Isaac용, mimic 제거), stl\ 메시 40종 | 생성·로딩 검증 완료 |
-| `common\` | 공용 모듈 — omx_kinematics.py(변형 DH FK/IK), omx_mujoco.py(MuJoCo 헬퍼), omx_isaac.py(Isaac 헬퍼) | FK는 MuJoCo와 교차 검증(오차 0.000mm) |
-| `ex1_pick_and_place_mujoco\` | **픽앤플레이스** (MuJoCo) — `--multi`로 3개 팔레타이징 | ✅ 실행 검증 (3개: 3/3, **평균 오차 0.000m**) |
-| `ex2_draw_rect_mujoco\` | **바닥 사각형 그리기** (MuJoCo) — 자취 시각화 | ✅ 실행 검증 (꼭짓점 최대 0.8mm, 경로 이탈 평균 0.1mm) |
-| `ex3_pick_and_place_isaacsim\` | 픽앤플레이스 (Isaac Sim) | ⚠ 미검증 (Isaac 미설치 환경에서 작성) |
+| `OMX_Examples_Simple\` | **★ 심플 파이썬 실행기 (C# + OpenJigWare 3D)** — 예제 4종(픽앤플레이스·팔레타이징·사각형 직선/베지어)을 "한 줄에 한 명령" 스타일로. 그리퍼를 닫으면 잡히고 열면 놓이는 자동 파지. **VS Code 등에서 예제 파일 단독 실행도 지원** | ✅ 전 예제 실행 검증 |
+| `ex0c_python_ojw3d\` | **파이썬 실행기 (C# + OpenJigWare 3D)** — 임베디드 파이썬(pythonnet)이 화면의 3D를 직접 구동. 예제는 함수·반복문을 사용한 구조화 버전 | ✅ 전 예제 실행 검증 |
+| `ex0_pickplace_ojw3d\` | 윈도우 프로그램 (C#) — 버튼식 픽앤플레이스·팔레타이징·사각형. 제어 API = 강의 형식 `Play / SyncRead / CalcInv` | ✅ 실행 검증 |
+| `ex0b_motiontable_ojw3d\` | 모션 테이블 실행기 (C#) — 예제 버튼 → 모션 그리드 생성 → 라이브러리 재생(PlayFrame) | ✅ 실행 검증 |
+| `model\` | OMX Follower 모델 — robot_stl.urdf(PyBullet/MuJoCo), robot_stl.xml(MJCF), robot_stl_isaac.urdf(Isaac용), stl\ 메시 40종 | 생성·로딩 검증 |
+| `common\` | 공용 파이썬 모듈 — omx_kinematics.py(변형 DH FK/IK), omx_mujoco.py, omx_isaac.py | FK는 MuJoCo와 교차 검증(오차 0.000mm) |
+| `ex1_pick_and_place_mujoco\` | 픽앤플레이스 (MuJoCo) — `--multi`로 3개 팔레타이징 | ✅ 실행 검증 (3/3) |
+| `ex2_draw_rect_mujoco\` | 바닥 사각형 그리기 (MuJoCo) — 자취 시각화 | ✅ 실행 검증 |
+| `ex3_pick_and_place_isaacsim\` | 픽앤플레이스 (Isaac Sim) | ⚠ 미검증 |
 | `ex4_draw_rect_isaacsim\` | 바닥 사각형 그리기 (Isaac Sim) | ⚠ 미검증 |
 
+처음이라면 **OMX_Examples_Simple** 부터 보세요. 예제 코드는 로봇 제어 명령만 사용합니다:
+
+```python
+c3d.Play(1200, 0, 11, 0, 12, -25, 13, 35, 14, 35, 15, 0)             # 관절 이동 (홈 자세)
+c3d.PlayXyz(1000, 0, 0, 200, 110, 45, 0, 90, 0, 14, 11, 12, 13)      # TCP 좌표 이동 (IK 내장)
+c3d.Play(400, 0, 16, 4)                                              # 그리퍼 닫기 = 잡기 (자동 파지)
+c3d.PlayXyzPath(1800, 0, 0, [250, -35, 63.5], 0, 90, 0, 14, [11, 12, 13])  # 한 획 긋기
+# scene.open(4, 1000000) / scene.torqon()  ← 주석 해제 시 실물 OMX 동시 구동
+```
+
+## 필요 환경
+
+- Windows 64비트, Visual Studio 2022 (C# 실행기 빌드 시)
+- **Python 3.10 또는 3.11 (64비트)** + `pip install pythonnet` — C# 실행기의 임베디드 파이썬 및 단독 실행용
+- MuJoCo 예제: `pip install mujoco numpy`
+- 실물 구동(선택): 다이나믹셀 XL-430 기반 OMX Follower + U2D2
+
 ## 실행 방법
+
+### OpenJigWare 3D 실행기 (OMX_Examples_Simple, ex0c)
+
+- 빌드: 각 폴더의 `.csproj`를 Release(**x64**)로 빌드 후 `lib\*.dll`을 `bin\{구성}\net48\`에 복사
+- 실행기에서: 예제 버튼 → 코드 확인 → ▶ Run (편집창에서 수정 후 바로 재실행, 리셋 버튼 = 중지)
+- VS Code 단독 실행: `bin\...\examples\`의 예제 .py 파일을 그대로 실행 — 3D 창 없이 동일하게 동작
+- 상세 사용법·아키텍처·함정 기록은 각 폴더의 README 참조
 
 ### MuJoCo (ex1, ex2)
 
@@ -55,18 +81,9 @@ python ex2_draw_rect.py                   # 사각형 그리기 (파란 자취 �
    └── robot_stl_isaac.urdf ── Isaac Sim ← ex3, ex4
 공용 기구학: common\omx_kinematics.py
    - FK: DH 한 줄 = Rz(θ)·Tz(d)·Tx(a)·Rx(α) 누적 (강의 Part3 변환행렬 그대로)
-   - IK: 수치 DLS — 목표 = TCP 위치(x,y,z) + 접근 피치(위에서 집기 = -90°)
-   - 정지자세 TCP (306.7, 0, 210.7)mm — ojwSimul 검증값과 일치
+OpenJigWare 3D 실행기: 임베디드 파이썬 → Play/PlayXyz/PlayXyzPath (IK·모션·경로 전부 라이브러리)
 ```
 
-- 관절: T11(베이스 요) T12(어깨) T13(팔꿈치) T14(손목 피치) + T15(툴 롤) + T16(그리퍼, mimic 3개)
-- 그리퍼: T16 +30°=열림(간격 49mm) / +8°=3cm 상자 파지폭 / -25°=완전 닫힘
-- 파지: 확정적 부착(attach) 방식 — TCP와 물체 거리 40mm 이내에서 그리퍼를 닫으면
-  물체를 손목 프레임에 고정 (초급 예제용 단순화, 흡착 그리퍼에 대응). 놓으면 물리 낙하.
+## 관련 프로젝트
 
-## 모델 재생성 방법
-
-1. `MakeUrdf.exe` 실행 (d:\bin\cs\OpenJigWare\trunk\OpenJigWare\MakeUrdf\bin\Release\)
-2. DH Parameters에 OMX Follower(Joints Only) 예제 텍스트 입력(Example 콤보 또는 직접 입력) → Apply DH
-3. 하단 View 콤보를 **STL**로 (현재 model\은 STL 전용 내보내기 — Skeleton이면 메시가 안 들어가고, All이면 스켈레톤 프리미티브가 같이 들어감)
-4. **View URDF** 클릭 → `bin\Release\urdf\`의 산출물을 이 폴더 `model\`로 복사
+- [OpenJigWare](https://github.com/ojw5014/OpenJigWare) — 본 예제가 사용하는 로봇 3D·제어 라이브러리
