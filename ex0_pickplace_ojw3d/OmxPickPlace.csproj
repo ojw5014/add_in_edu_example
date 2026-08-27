@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <PlatformTarget>x86</PlatformTarget>
+    <RootNamespace>OmxPickPlace</RootNamespace>
+    <AssemblyName>OmxPickPlace</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenJigWare">
+      <HintPath>lib\OpenJigWare.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.FreeGlut">
+      <HintPath>lib\Tao.FreeGlut.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.OpenGl">
+      <HintPath>lib\Tao.OpenGl.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Ode">
+      <HintPath>lib\Tao.Ode.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Platform.Windows">
+      <HintPath>lib\Tao.Platform.Windows.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="stl\**" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="lib\OpenJigWare.dll.config" CopyToOutputDirectory="PreserveNewest" Link="OpenJigWare.dll.config" />
+  </ItemGroup>
+
+</Project>

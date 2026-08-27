@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- x64 필수: 파이썬(x64)을 프로세스 안에 임베드하기 때문 -->
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>OmxPythonRunner</RootNamespace>
+    <AssemblyName>OmxPythonRunner</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenJigWare">
+      <HintPath>lib\OpenJigWare.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.FreeGlut">
+      <HintPath>lib\Tao.FreeGlut.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.OpenGl">
+      <HintPath>lib\Tao.OpenGl.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Ode">
+      <HintPath>lib\Tao.Ode.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Platform.Windows">
+      <HintPath>lib\Tao.Platform.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="Python.Runtime">
+      <HintPath>lib\Python.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="stl\**" CopyToOutputDirectory="PreserveNewest" />
+
+    <None Include="examples\**" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="lib\OpenJigWare.dll.config" CopyToOutputDirectory="PreserveNewest" Link="OpenJigWare.dll.config" />
+  </ItemGroup>
+
+  <!-- 폼 디자이너 인식: MainForm.cs 더블클릭 = 디자이너 열림, Designer.cs는 하위로 접힘 -->
+  <ItemGroup>
+    <Compile Update="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

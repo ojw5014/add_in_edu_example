@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="ojw_robot">
+    <compiler meshdir="." angle="radian" balanceinertia="true"/>
+
+    <option gravity="0 0 -9.81" timestep="0.002" integrator="implicitfast"/>
+
+    <default>
+        <joint damping="0.1" armature="0.01"/>
+        <position kp="1000" kv="30"/>
+    </default>
+
+    <visual>
+        <headlight ambient="0.7 0.7 0.7" diffuse="0.9 0.9 0.9" specular="0.5 0.5 0.5" active="1"/>
+    </visual>
+
+    <asset>
+        <texture name="grid_tex" type="2d" builtin="checker" rgb1="0.10 0.18 0.50" rgb2="0.07 0.14 0.42" width="512" height="512"/>
+        <material name="grid_mat" texture="grid_tex" texrepeat="20 20"/>
+        <mesh name="omx-ai_follower_base_plate" file="stl/omx-ai_follower_base_plate.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="xl-430" file="stl/xl-430.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_frame1" file="stl/omx-ai_follower_frame1.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_frame2" file="stl/omx-ai_follower_frame2.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_link_l" file="stl/omx-ai_follower_link_l.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_link_u" file="stl/omx-ai_follower_link_u.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="dc15_dummy_std" file="stl/dc15_dummy_std.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_frame3" file="stl/omx-ai_follower_frame3.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_frame4" file="stl/omx-ai_follower_frame4.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_gripper_l" file="stl/omx-ai_follower_gripper_l.stl" scale="0.001000 0.001000 0.001000"/>
+        <mesh name="omx-ai_follower_gripper_r" file="stl/omx-ai_follower_gripper_r.stl" scale="0.001000 0.001000 0.001000"/>
+    </asset>
+
+    <worldbody>
+        <light name="main_light" pos="0 0 3" dir="0 0 -1" diffuse="1 1 1" castshadow="true"/>
+        <geom name="floor" type="plane" size="2 2 0.1" material="grid_mat" pos="0 0 -0.001"/>
+        <camera name="front_cam" pos="0.5 -0.5 0.4" xyaxes="1 0 0 0 1 1"/>
+        <camera name="side_cam" pos="0 -0.7 0.3" xyaxes="1 0 0 0 0.5 1"/>
+
+        <body name="base_link" pos="0 0 0" quat="1.000000 0.000000 0.000000 0.000000">
+            <freejoint name="root_freejoint"/>
+            <inertial pos="-0.001176 0.001829 0.015102" mass="0.248782" fullinertia="0.000435310 0.000261167 0.000587495 0.000004819 0.000022834 0.000002811"/>
+            <geom type="mesh" mesh="omx-ai_follower_base_plate" pos="0.011000 0.000000 0.000000" quat="0.500000 0.500000 0.500000 0.500000" rgba="0.000 0.000 0.000 1.0"/>
+            <geom type="mesh" mesh="xl-430" pos="-0.000250 0.000000 0.034000" quat="0.707107 0.000000 0.000000 -0.707107" rgba="0.000 0.000 0.000 1.0"/>
+            <geom type="mesh" mesh="omx-ai_follower_frame1" pos="-0.000250 0.000000 0.054200" quat="0.500000 0.500000 -0.500000 -0.500000" rgba="0.000 0.000 0.000 1.0"/>
+            <body name="link_1" pos="0.000000 0.000000 0.053000" quat="1.000000 0.000000 0.000000 0.000000">
+                <joint name="T11" type="hinge" axis="0.000000 0.000000 1.000000" range="-3.141593 3.141593"/>
+                <inertial pos="0.000000 0.000369 0.029630" mass="0.066128" fullinertia="0.000021022 0.000019704 0.000011557 0.000000000 0.000000000 -0.000000119"/>
+                <geom type="mesh" mesh="omx-ai_follower_frame2" pos="0.000000 0.000000 0.021500" quat="0.500000 -0.500000 -0.500000 0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                <geom type="mesh" mesh="xl-430" pos="0.000000 0.000000 0.044500" quat="0.000000 0.000000 0.707107 0.707107" rgba="0.000 0.000 0.000 1.0"/>
+                <body name="link_2" pos="0.000000 0.000000 0.044500" quat="1.000000 0.000000 0.000000 0.000000">
+                    <joint name="T12" type="hinge" axis="0.000000 1.000000 0.000000" range="-3.141593 3.141593"/>
+                    <inertial pos="0.016512 0.000241 0.098344" mass="0.101183" fullinertia="0.000113928 0.000133825 0.000049567 -0.000000366 -0.000025130 -0.000000362"/>
+                    <geom type="mesh" mesh="omx-ai_follower_link_l" pos="0.000000 0.000000 0.000000" quat="0.707107 0.000000 0.000000 -0.707107" rgba="0.000 0.000 0.000 1.0"/>
+                    <geom type="mesh" mesh="xl-430" pos="0.041500 0.000000 0.113150" quat="0.500000 -0.500000 -0.500000 -0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                    <body name="link_3" pos="0.041500 0.000000 0.113150" quat="1.000000 0.000000 0.000000 0.000000">
+                        <joint name="T13" type="hinge" axis="0.000000 1.000000 0.000000" range="-3.141593 3.141593"/>
+                        <inertial pos="0.096251 0.000254 0.000181" mass="0.047564" fullinertia="0.000008669 0.000139200 0.000144708 -0.000000748 0.000000280 0.000000002"/>
+                        <geom type="mesh" mesh="omx-ai_follower_link_u" pos="0.000000 0.000000 0.000000" quat="0.500000 -0.500000 0.500000 -0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                        <geom type="mesh" mesh="dc15_dummy_std" pos="0.154500 0.001500 0.000000" quat="0.500000 -0.500000 -0.500000 -0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                        <body name="link_4" pos="0.162000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000">
+                            <joint name="T14" type="hinge" axis="0.000000 1.000000 0.000000" range="-3.141593 3.141593"/>
+                            <inertial pos="0.025352 -0.000002 0.006167" mass="0.020411" fullinertia="0.000003153 0.000004177 0.000003507 0.000000001 -0.000000324 0.000000000"/>
+                            <geom type="mesh" mesh="omx-ai_follower_frame3" pos="0.000000 0.000000 0.000000" quat="0.500000 0.500000 -0.500000 -0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                            <geom type="mesh" mesh="dc15_dummy_std" pos="0.030400 0.000000 0.007500" quat="0.500000 -0.500000 0.500000 -0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                            <body name="link_5" pos="0.043200 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000">
+                                <joint name="T15" type="hinge" axis="1.000000 0.000000 0.000000" range="-3.141593 3.141593"/>
+                                <inertial pos="0.011580 0.000031 0.001719" mass="0.022414" fullinertia="0.000003875 0.000002896 0.000003308 -0.000000012 0.000000183 -0.000000044"/>
+                                <geom type="mesh" mesh="omx-ai_follower_frame4" pos="0.001500 0.000000 0.000000" quat="0.500000 0.500000 0.500000 0.500000" rgba="0.000 0.000 0.000 1.0"/>
+                                <geom type="mesh" mesh="dc15_dummy_std" pos="0.015000 0.000000 0.001500" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.000 0.000 0.000 1.0"/>
+                                <body name="link_6" pos="0.015000 0.007500 0.000000" quat="1.000000 0.000000 0.000000 0.000000">
+                                    <joint name="T16" type="hinge" axis="0.000000 0.000000 1.000000" range="-3.141593 3.141593"/>
+                                    <inertial pos="0.021905 0.001725 0.000423" mass="0.008922" fullinertia="0.000001828 0.000004877 0.000003451 0.000000228 0.000000049 0.000000015"/>
+                                    <geom type="mesh" mesh="omx-ai_follower_gripper_l" pos="0.000000 0.000000 0.016200" quat="0.707107 0.000000 0.000000 -0.707107" rgba="0.000 0.000 0.000 1.0"/>
+                                    <body name="link_7" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000">
+                                        <joint name="t16_0" type="hinge" axis="0.000000 0.000000 -1.000000" range="-3.141593 3.141593"/>
+                                        <inertial pos="0.000000 0.000000 0.000000" mass="0.001000" fullinertia="0.000000100 0.000000100 0.000000100 0.000000000 0.000000000 0.000000000"/>
+                                        <geom type="sphere" size="0.001" pos="0 0 0" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.5 0.5 0.5 1.0"/>
+                                        <body name="link_8" pos="0.000000 -0.018300 0.000000" quat="1.000000 0.000000 0.000000 0.000000">
+                                            <joint name="t16_1" type="hinge" axis="0.000000 0.000000 -1.000000" range="-3.141593 3.141593"/>
+                                            <inertial pos="0.022587 -0.001737 0.000212" mass="0.008777" fullinertia="0.000001790 0.000004711 0.000003326 -0.000000227 0.000000010 -0.000000009"/>
+                                            <geom type="mesh" mesh="omx-ai_follower_gripper_r" pos="0.000000 0.000000 0.016200" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.000 0.000 0.000 1.0"/>
+                                            <body name="link_9" pos="0.000000 0.000000 0.000000" quat="1.000000 0.000000 0.000000 0.000000">
+                                                <joint name="t16_2" type="hinge" axis="0.000000 0.000000 1.000000" range="-3.141593 3.141593"/>
+                                                <inertial pos="0.000000 0.000000 0.000000" mass="0.001000" fullinertia="0.000000100 0.000000100 0.000000100 0.000000000 0.000000000 0.000000000"/>
+                                                <geom type="sphere" size="0.001" pos="0 0 0" quat="1.000000 0.000000 0.000000 0.000000" rgba="0.5 0.5 0.5 1.0"/>
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <position name="pos_T11" joint="T11" ctrlrange="-3.141593 3.141593"/>
+        <position name="pos_T12" joint="T12" ctrlrange="-3.141593 3.141593"/>
+        <position name="pos_T13" joint="T13" ctrlrange="-3.141593 3.141593"/>
+        <position name="pos_T14" joint="T14" ctrlrange="-3.141593 3.141593"/>
+        <position name="pos_T15" joint="T15" ctrlrange="-3.141593 3.141593"/>
+        <position name="pos_T16" joint="T16" ctrlrange="-3.141593 3.141593"/>
+    </actuator>
+
+    <equality>
+        <weld body1="base_link" relpose="0 0 0 1 0 0 0" solref="0.001 1" solimp="0.999 0.9999 0.001"/>
+        <joint joint1="t16_0" joint2="T16" polycoef="0 1.0000 0 0 0"/>
+        <joint joint1="t16_1" joint2="T16" polycoef="0 1.0000 0 0 0"/>
+        <joint joint1="t16_2" joint2="T16" polycoef="0 1.0000 0 0 0"/>
+    </equality>
+
+</mujoco>
