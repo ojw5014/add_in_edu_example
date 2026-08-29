@@ -33,6 +33,7 @@
             this.btnRun = new System.Windows.Forms.Button();
             this.btnEx4 = new System.Windows.Forms.Button();
             this.btnEx5 = new System.Windows.Forms.Button();
+            this.btnEx6 = new System.Windows.Forms.Button();
             this.btnEx3 = new System.Windows.Forms.Button();
             this.btnEx2 = new System.Windows.Forms.Button();
             this.btnEx1 = new System.Windows.Forms.Button();
@@ -57,6 +58,7 @@
             this.pnSide.Controls.Add(this.txtLog);
             this.pnSide.Controls.Add(this.btnReset);
             this.pnSide.Controls.Add(this.btnRun);
+            this.pnSide.Controls.Add(this.btnEx6);
             this.pnSide.Controls.Add(this.btnEx5);
             this.pnSide.Controls.Add(this.btnEx4);
             this.pnSide.Controls.Add(this.btnEx3);
@@ -128,9 +130,24 @@
             this.btnRun.Text = "▶ Run (파이썬 실행)";
             this.btnRun.UseVisualStyleBackColor = false;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
-            // 
+            //
+            // btnEx6
+            //
+            this.btnEx6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnEx6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnEx6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEx6.Font = new System.Drawing.Font("맑은 고딕", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnEx6.ForeColor = System.Drawing.Color.White;
+            this.btnEx6.Location = new System.Drawing.Point(8, 206);
+            this.btnEx6.Name = "btnEx6";
+            this.btnEx6.Size = new System.Drawing.Size(454, 38);
+            this.btnEx6.TabIndex = 10;
+            this.btnEx6.Text = "예제 6: 팔레타이징 2 (아치·경유 설정)";
+            this.btnEx6.UseVisualStyleBackColor = false;
+            this.btnEx6.Click += new System.EventHandler(this.btnEx6_Click);
+            //
             // btnEx5
-            // 
+            //
             this.btnEx5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
             this.btnEx5.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnEx5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -252,6 +269,7 @@
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnEx4;
         private System.Windows.Forms.Button btnEx5;
+        private System.Windows.Forms.Button btnEx6;
         private System.Windows.Forms.Button btnEx3;
         private System.Windows.Forms.Button btnEx2;
         private System.Windows.Forms.Button btnEx1;

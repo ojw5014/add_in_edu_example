@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # ============================================================
 # 심플 예제 5: 사각형 그리기 (베지어 실시간 계산) — 예제 4와의 차이
 #
 # 예제 4는 미리 계산해 둔 좌표를 나열했지만, 여기서는 꼭짓점 4개만 주고
 # 오픈지그웨어 라이브러리의 곡선 함수가 경로를 "실행 순간에" 계산한다:
-#   Ojw.CMath.SampleCornersBlend(꼭짓점 목록, 점 개수)
-#     — 직선 구간은 직선 그대로, 각 모서리는 2차 베지어로 둥글게(블렌드 25%),
-#       첫 점 == 끝 점이면 닫힌 도형으로 처리한다
+#   Ojw.CMath.SampleCornersSmooth(꼭짓점, 점 개수, "30mm" 또는 "90%", 폐루프 여부)
+#     — 산업용 코너 지정 방식 2종:
+#       "30mm" = 코너 도착 30mm 전에서 직선을 멈추고 코너 지나 30mm 지점까지 베지어
+#       "90%"  = 변의 90% 지점까지 직선, 남은 10%와 다음 변의 10%를 베지어로
+#     폐루프(True)면 마지막 변에서 시작 코너까지도 둥글게 잇는다.
 # 점 하나짜리 곡선 계산은 Ojw.CMath.Bez2(p0, 제어점, p1, u) 로도 가능하다.
 # ============================================================
 import clr, os, sys
@@ -47,7 +49,8 @@ corners.Add(Array[Single]([250.0, 35.0, Z]))
 corners.Add(Array[Single]([170.0, 35.0, Z]))
 corners.Add(Array[Single]([170.0, -35.0, Z]))    # 첫 점 반복 = 닫힌 도형
 
-path = Ojw.CMath.SampleCornersBlend(corners, 90)     # ★ 베지어 라운드 경로 실시간 생성 (90점)
+path = Ojw.CMath.SampleCornersSmooth(corners, 90, "30mm", True)   # ★ 코너 30mm 전부터 라운드 (폐루프)
+# path = Ojw.CMath.SampleCornersSmooth(corners, 90, "90%", True)  #   퍼센트형 — 변의 90%까지 직선 후 라운드
 print("- 라이브러리가 만든 경로 점: %d개" % path.Count)
 
 pts = []
