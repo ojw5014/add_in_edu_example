@@ -4,6 +4,78 @@ K-디지털 기초역량훈련 「로보틱스 기초」 강의용 실습 예제
 로봇 모델은 OMX Follower 6축 로봇팔(변형 DH)이며, **파이썬 코드로 3D 로봇을 직접 움직이고,
 같은 코드로 실물 로봇(다이나믹셀)까지 구동**할 수 있습니다.
 
+## 바로 실행 (빌드 불필요)
+
+Release 실행본이 저장소에 포함되어 있어 내려받아 바로 실행할 수 있습니다.
+
+| 프로그램 | 실행 파일 |
+|---|---|
+| **★ 심플 실행기** (한 줄에 한 명령, 처음이라면 여기부터) | `OMX_Examples_Simple\bin\Release\net48\OmxExamplesSimple.exe` |
+| 구조화 실행기 (함수·for 반복문 버전) | `ex0c_python_ojw3d\bin\Release\net48\OmxPythonRunner.exe` |
+
+- 필요 환경: Windows 64비트 + **Python 3.10 또는 3.11 (64비트, PATH 등록)** + `pip install pythonnet`
+- 실행기 없이도 `bin\Release\net48\examples\` 의 예제 .py 파일을 VS Code 등에서 그대로 실행 가능
+- 물체·펜·적재 목표의 좌표는 각 실행기 폴더의 `workspace_map.png` 참고
+
+## 명령 매뉴얼 — 예제에서 사용하는 함수
+
+### 1) 로봇 동작 (c3d — 화면의 3D 로봇, `c3d = scene.c3d`)
+
+| 함수 | 설명 |
+|---|---|
+| `c3d.Play(시간ms, 딜레이ms, ID,각도, ID,각도, ...)` | **관절 각도 직접 지정** 이동. ID = 모터 번호(11~16), 각도 = 도(°). 끝날 때까지 대기(블로킹). 딜레이 = 도착 후 잠깐 멈추는 시간 |
+| `c3d.PlayXyz(시간ms, 딜레이ms, 수식번호, x, y, z, Rx, Ry, Rz, 손목ID, 관절ID×3)` | **TCP(그리퍼 중심) 좌표 이동** — 역기구학은 내부에서 자동. x,y,z = mm, Rx/Ry/Rz = 툴 자세(도, **Ry=90 = 수직 아래**), 손목ID(14) = 자세 담당 모터, 관절ID 3개(11,12,13) = 위치 담당 관절 |
+| `c3d.PlayXyz(시간ms, 딜레이ms, 수식번호, x, y, z)` | **축약형** — 좌표만 주면 자세·모터 구성·아치·경유는 아래 2)의 설정을 따른다 (기본: 수직 아래·손목 14·관절 11,12,13) |
+| `c3d.PlayXyzPath(시간ms, 딜레이ms, 수식번호, [x,y,z, x,y,z, ...], Rx, Ry, Rz, 손목ID, [관절ID×3])` | **폴리라인 경로를 멈춤 없이 한 획으로** — 그리기 등 연속 동작용. 직선은 끝점만 주면 됨 |
+| `x, y, z = c3d.CalcF(수식번호, -1, False)` | 현재 TCP 좌표 읽기(정기구학) — 튜플로 반환 |
+
+### 2) 축약 PlayXyz 의 설정 (설정은 한 번, 이후 이동은 좌표 한 줄)
+
+| 함수 | 설명 |
+|---|---|
+| `c3d.PlayXyz_Param_Tcp(수식번호, Rx, Ry, Rz)` | 툴 자세 설정 (기본 0, 90, 0 = 수직 아래) |
+| `c3d.PlayXyz_Param_TcpId(수식번호, 손목ID, 관절ID×3)` | 모터 구성 설정 (기본 14, 11, 12, 13) |
+| `c3d.PlayXyz_Param_Arch(수식번호, 높이mm, "x"/"y"/"z")` | **아치** — 이후의 축약 이동이 [들어올리기 → 이동 → 내려놓기] 자동 경로가 된다. 0 = 해제. 높이는 로봇이 닿는 범위 안으로. 제자리 상하 이동은 직선 처리 |
+| `c3d.PlayXyz_Param_Pass(수식번호, "20mm" 또는 "80%")` | **경유(코너 블렌딩)** — 경로 코너를 둥글게 통과. "20mm" = 코너 앞뒤 20mm 를 곡선으로, "80%" = 변의 80%까지 직선 후 곡선. `None` = 해제(각진 코너) |
+
+```python
+c3d.PlayXyz_Param_Arch(0, 45, "z")        # 설정: z 축으로 45mm 들어올려 이동
+c3d.PlayXyz_Param_Pass(0, "20mm")         # 설정: 코너 앞뒤 20mm 를 둥글게
+c3d.PlayXyz(2600, 0, 0, 170, -110, 55)    # 이동 한 줄 = 들어올려 → 이동 → 내려놓기 (예제 6)
+```
+
+### 3) 경로 생성 (Ojw.CMath — 예제 5)
+
+| 함수 | 설명 |
+|---|---|
+| `Ojw.CMath.SampleCornersSmooth(꼭짓점리스트, 점개수, "30mm" 또는 "90%", 폐루프)` | 꼭짓점만 주면 **코너를 둥글린 경로를 실행 순간에 계산**. "30mm" = 코너 앞뒤 거리 지정, "90%" = 직선 유지 비율 지정. 폐루프 True = 마지막→처음 코너도 둥글게. 결과를 `PlayXyzPath` 에 넣는다 |
+| `Ojw.CMath.SampleCornersBlendMm / BlendPercent` | 위 함수의 숫자 인자판 (문자열 대신 30.0 / 90.0) |
+
+```python
+from System.Collections.Generic import List
+from System import Array, Single
+corners = List[Array[Single]]()
+corners.Add(Array[Single]([170.0, -35.0, 63.5]))   # 꼭짓점을 하나씩 추가
+path = Ojw.CMath.SampleCornersSmooth(corners, 90, "30mm", True)
+```
+
+### 4) 실물 로봇 연결 (scene = Ojw.CScene_t — 주석 `#` 만 지우면 실물 동시 구동)
+
+| 함수 | 설명 |
+|---|---|
+| `scene.open(포트번호, 통신속도)` | 통신 열기 — 예: `scene.open(4, 1000000)` = COM4, 1Mbps(U2D2) |
+| `scene.torqon()` | 전 모터 토크 ON — 켜기 전 실물 자세를 읽어 3D 를 먼저 정렬(점프 없음) |
+| `scene.syncread()` | 전 모터 현재 각도 읽기 — 로그 표시 + 3D 동기화 |
+| `scene.torqoff()` | 토크 OFF — 로봇을 손으로 움직일 수 있게 |
+| `scene.close()` | 통신 닫기 |
+| `Ojw.CScene_t.CreateOmx()` | 실행기(3D 창) 없이 단독 실행할 때의 scene 생성 — 예제 상단에 이미 들어 있어 **같은 파일이 실행기 안/밖 어디서나 동작** |
+
+### 5) 잡기·놓기 규칙 (별도 명령 없음 — 그리퍼 여닫기가 곧 잡기/놓기)
+
+- 그리퍼 = 모터 **16** : `c3d.Play(400, 0, 16, 30)` = 활짝 열기 / `16, 4` = 제품(지름 24) 파지 / `16, -4` = 펜(지름 12) 파지
+- **닫는 순간** 그리퍼 중심이 물체와 수평 12mm·높이 ±30mm 이내면 잡히고, 어긋나면 원인이 로그에 표시된다. **열면** 그 자리에 놓인다
+- 펜은 거치대에서 닫으면 파지, **펜 끝이 그리기 판에 닿으면 잉크(빨간 자취)가 자동**으로 그려진다
+
 ## 폴더 구성
 
 | 폴더 | 내용 | 검증 상태 |

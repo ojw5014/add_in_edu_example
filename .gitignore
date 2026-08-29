@@ -1,18 +1,19 @@
-# 빌드 산출물
-bin/
-obj/
+# build outputs (bin/Release/net48 runtime folders are versioned for ready-to-run)
+**/obj/
+**/bin/*
+!**/bin/Release/
+**/bin/Release/*
+!**/bin/Release/net48/
+
 .vs/
 *.user
 
-# 파이썬
 __pycache__/
 *.pyc
 
-# 실행 결과물·아카이브
 output/
 *.7z
 
-# 기타
 *.bak
 Thumbs.db
 .svn/
