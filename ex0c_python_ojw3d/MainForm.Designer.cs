@@ -32,6 +32,7 @@
             this.btnReset = new System.Windows.Forms.Button();
             this.btnRun = new System.Windows.Forms.Button();
             this.btnEx4 = new System.Windows.Forms.Button();
+            this.btnEx5 = new System.Windows.Forms.Button();
             this.btnEx3 = new System.Windows.Forms.Button();
             this.btnEx2 = new System.Windows.Forms.Button();
             this.btnEx1 = new System.Windows.Forms.Button();
@@ -56,6 +57,7 @@
             this.pnSide.Controls.Add(this.txtLog);
             this.pnSide.Controls.Add(this.btnReset);
             this.pnSide.Controls.Add(this.btnRun);
+            this.pnSide.Controls.Add(this.btnEx5);
             this.pnSide.Controls.Add(this.btnEx4);
             this.pnSide.Controls.Add(this.btnEx3);
             this.pnSide.Controls.Add(this.btnEx2);
@@ -126,6 +128,21 @@
             this.btnRun.Text = "▶ Run (파이썬 실행)";
             this.btnRun.UseVisualStyleBackColor = false;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
+            // 
+            // btnEx5
+            // 
+            this.btnEx5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnEx5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnEx5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEx5.Font = new System.Drawing.Font("맑은 고딕", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnEx5.ForeColor = System.Drawing.Color.White;
+            this.btnEx5.Location = new System.Drawing.Point(8, 206);
+            this.btnEx5.Name = "btnEx5";
+            this.btnEx5.Size = new System.Drawing.Size(454, 38);
+            this.btnEx5.TabIndex = 9;
+            this.btnEx5.Text = "예제 5: 사각형 (베지어 실시간 계산)";
+            this.btnEx5.UseVisualStyleBackColor = false;
+            this.btnEx5.Click += new System.EventHandler(this.btnEx5_Click);
             // 
             // btnEx4
             // 
@@ -234,6 +251,7 @@
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnEx4;
+        private System.Windows.Forms.Button btnEx5;
         private System.Windows.Forms.Button btnEx3;
         private System.Windows.Forms.Button btnEx2;
         private System.Windows.Forms.Button btnEx1;

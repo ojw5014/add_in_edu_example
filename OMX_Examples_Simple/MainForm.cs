@@ -127,6 +127,7 @@ namespace OmxPythonRunner
         private void btnEx2_Click(object sender, EventArgs e) { LoadExample("ex2_palletizing.py"); }
         private void btnEx3_Click(object sender, EventArgs e) { LoadExample("ex3_rect.py"); }
         private void btnEx4_Click(object sender, EventArgs e) { LoadExample("ex4_rect_bezier.py"); }
+        private void btnEx5_Click(object sender, EventArgs e) { LoadExample("ex5_rect_bezier_rt.py"); }
         private void btnRun_Click(object sender, EventArgs e) { RunPython(); }
         private void btnReset_Click(object sender, EventArgs e) { StopAndReset(); }
 
