@@ -118,9 +118,25 @@ namespace OmxPythonRunner
             "[10.8,0,90,90],[-1,0,0]",
         });
 
-        public MainForm()
+        private string m_strStartScript = null;   // [2026-09-29] 시작 시 불러올 파이썬 파일(명령줄 인자)
+        private bool m_bBare = false;              // [2026-09-29] 강의 모드(스크립트 인자로 시작): DH→3D 만 보이도록 팔레트·판·펜·제품 생략
+
+        private string m_strStartDh = null;        // [2026-09-29] --dh <파일>: 시작할 때 OMX 대신 이 DH 텍스트를 뼈대로 그린다
+
+        public MainForm() : this(null, null) { }
+
+        public MainForm(string strScriptPath) : this(strScriptPath, null) { }
+
+        public MainForm(string strScriptPath, string strDhPath)
         {
+            m_strStartScript = strScriptPath;
+            m_strStartDh = strDhPath;
+            m_bBare = !string.IsNullOrEmpty(strScriptPath);
             InitializeComponent();
+            // [2026-09-29] .py 파일을 편집창에 끌어다 놓으면 불러온다
+            txtPython.AllowDrop = true;
+            txtPython.DragEnter += (s, e) => { if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy; };
+            txtPython.DragDrop += (s, e) => { var a = (string[])e.Data.GetData(DataFormats.FileDrop); if (a != null && a.Length > 0) LoadFile(a[0]); };
         }
 
         private void btnEx1_Click(object sender, EventArgs e) { LoadExample("ex1_pick_and_place.py"); }
@@ -160,6 +176,14 @@ namespace OmxPythonRunner
             catch (Exception ex) { Ojw.printf(txtLog, "[ERROR] {0}\r\n", ex.Message); }
         }
 
+        /// <summary>[2026-09-29] 임의 경로의 파이썬 파일을 편집창에 불러온다 (명령줄 인자·드래그 앤 드롭)</summary>
+        private void LoadFile(string strPath)
+        {
+            if (!File.Exists(strPath)) { Ojw.printf(txtLog, "[ERROR] 파일 없음: {0}\r\n", strPath); return; }
+            txtPython.Text = File.ReadAllText(strPath);
+            Ojw.printf(txtLog, "\r\n파일 로드: {0} - 코드를 살펴보고 Run 을 누르세요.\r\n", strPath);
+        }
+
         private void LoadExample(string strFile)
         {
             string strPath = Path.Combine(Application.StartupPath, "examples", strFile);
@@ -195,21 +219,30 @@ namespace OmxPythonRunner
             m_C3d.SetAngle_Display(20.0f, 0.0f, 15.0f);
 
             string strCmd = "", strXml = "";
-            m_C3d.m_CHeader.pstrKinematics[0] = DH_OMX;
+            string strDhStart = DH_OMX;
+            if (!string.IsNullOrEmpty(m_strStartDh) && File.Exists(m_strStartDh))
+            {   // [2026-09-29] 강의 모드: 지정한 DH 텍스트를 뼈대(스켈레톤)로 그린다
+                strDhStart = File.ReadAllText(m_strStartDh);
+                m_C3d.SetSkeletonView(true);
+            }
+            m_C3d.m_CHeader.pstrKinematics[0] = strDhStart;
             m_C3d.CheckForward();
             m_C3d.m_CHeader.strDrawModel = m_C3d.MakeDHSkeleton_Urdf(
                 true, true, false, true, 10.0f, 20.0f, Color.Violet,
-                DH_OMX, 0, 0, 0, 0, 0, 0, 0,
+                strDhStart, 0, 0, 0, 0, 0, 0, 0,
                 ref m_txtDummy, ref strCmd, ref strXml);
             m_C3d.CompileDesign();
             m_C3d.SetScale(0.34f);
 
             m_C3d.CalcInv_SetIKAlgorithm(5);   // TRAC-IK (ROS) — 라이브러리 IK 사용
 
+            if (!m_bBare)
+            {
             m_lstItems.Add(NewItem("obj1", 200, 160, Color.IndianRed));
             m_lstItems.Add(NewItem("obj2", 200, 110, Color.MediumSeaGreen));
             m_lstItems.Add(NewItem("obj3", 200, 60, Color.CornflowerBlue));
 
+            }
             // 장면·실물 브리지(scene) = 라이브러리 클래스. 렌더 틱이 모션을 진행하므로 외부 펌프 선언
             m_Scene = new Ojw.CScene_t(m_C3d, REAL_IDS, REAL_SIGN);
             m_C3d.MoveJoints_SetExternalPump(true);
@@ -222,6 +255,7 @@ namespace OmxPythonRunner
             m_tmrPoll.Enabled = true;   // 50ms 파이썬 출력 폴링 (명령 수집 + 순차 실행)
 
             LoadExample("ex1_pick_and_place.py");
+            if (!string.IsNullOrEmpty(m_strStartScript)) LoadFile(m_strStartScript);
             Ojw.printf(txtLog, "준비 완료 — Run 을 누르면 파이썬 코드가 이 창의 3D 를 직접 구동합니다.\r\n\r\n");
         }
 
@@ -573,6 +607,7 @@ namespace OmxPythonRunner
 
             m_C3d.User_Clear();
 
+            if (m_bBare) { m_C3d.OjwDraw(); return; }   // [2026-09-29] 강의 모드: 로봇만 그린다
             // 팔레트 + 적재 목표 마킹
             DrawBox(210, -110, 0, 150, 110, 10, Color.Peru, 1.0f);
             foreach (var t in m_adTargets)
